@@ -32,6 +32,17 @@ function saveProgress() {
   );
 }
 
+function showMessage(message, type = "info") {
+  const box = document.getElementById("inline-message");
+  if (!box) return;
+
+  box.textContent = message;
+  box.classList.remove("is-hidden", "is-success", "is-warning");
+
+  if (type === "success") box.classList.add("is-success");
+  if (type === "warning") box.classList.add("is-warning");
+}
+
 function hasKeywords(required = [], sourceKeywords = state.collectedKeywords) {
   return required.every((keyword) => sourceKeywords.includes(keyword));
 }
@@ -61,19 +72,45 @@ function renderTabs() {
   });
 }
 
+function groupDocsBySection(docs) {
+  return docs.reduce((acc, doc) => {
+    const key = doc.section || "未分類";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(doc);
+    return acc;
+  }, {});
+}
+
 function renderDocList() {
   const container = document.getElementById("doc-list");
   container.innerHTML = "";
 
   const visibleDocs = getVisibleDocs();
+  const groups = groupDocsBySection(visibleDocs);
 
-  visibleDocs.forEach((doc) => {
-    const li = document.createElement("li");
-    const btn = document.createElement("button");
-    btn.textContent = `[${doc.category}] ${doc.title}`;
-    btn.addEventListener("click", () => openDoc(doc.id));
-    li.appendChild(btn);
-    container.appendChild(li);
+  Object.entries(groups).forEach(([sectionName, docs]) => {
+    const section = document.createElement("section");
+    section.className = "doc-group";
+
+    const heading = document.createElement("h3");
+    heading.className = "doc-group-title";
+    heading.textContent = sectionName;
+    section.appendChild(heading);
+
+    const list = document.createElement("div");
+    list.className = "tag-wrap";
+
+    docs.forEach((doc) => {
+      const btn = document.createElement("button");
+      btn.className = "tag-btn";
+      btn.textContent = `${doc.title}`;
+      btn.title = `分類：${doc.category}`;
+      btn.addEventListener("click", () => openDoc(doc.id));
+      list.appendChild(btn);
+    });
+
+    section.appendChild(list);
+    container.appendChild(section);
   });
 
   if (!visibleDocs.some((doc) => doc.id === state.currentDocId)) {
@@ -91,6 +128,7 @@ function renderKeywordList() {
 
   if (state.collectedKeywords.length === 0) {
     const li = document.createElement("li");
+    li.className = "hint-line";
     li.textContent = "尚未收集任何關鍵詞";
     list.appendChild(li);
     return;
@@ -99,7 +137,7 @@ function renderKeywordList() {
   state.collectedKeywords.forEach((keyword) => {
     const li = document.createElement("li");
     const button = document.createElement("button");
-    button.className = "inventory-item";
+    button.className = "inventory-item tag-btn";
     button.textContent = `✦ ${keyword}`;
     button.title = "在開啟文檔時點擊以嘗試觸發反應";
     button.addEventListener("click", () => activateKeyword(keyword));
@@ -115,12 +153,12 @@ function collectKeyword(keyword) {
   saveProgress();
   renderKeywordList();
   renderDocList();
-  alert(`取得關鍵詞：${keyword}`);
+  showMessage(`取得關鍵詞：${keyword}`, "success");
 }
 
 function activateKeyword(keyword) {
   if (!state.currentDocId) {
-    alert("請先打開一份文檔。");
+    showMessage("請先打開一份文檔。", "warning");
     return;
   }
 
@@ -132,7 +170,7 @@ function activateKeyword(keyword) {
   );
 
   if (relatedHidden.length === 0) {
-    alert(`「${keyword}」沒有反應。`);
+    showMessage(`「${keyword}」沒有反應。`, "warning");
     return;
   }
 
@@ -144,7 +182,7 @@ function activateKeyword(keyword) {
   }
 
   openDoc(doc.id);
-  alert(`「${keyword}」產生了反應，文檔內容已更新。`);
+  showMessage(`「${keyword}」產生了反應，文檔內容已更新。`, "success");
 }
 
 function markCollectableKeywords(text, keywords) {
@@ -198,7 +236,7 @@ function openDoc(docId) {
   const content = document.getElementById("doc-content");
 
   title.textContent = doc.title;
-  meta.textContent = `分類：${doc.category}`;
+  meta.textContent = `大分類：${doc.section}｜分類：${doc.category}`;
 
   const markedBody = markCollectableKeywords(doc.body, doc.keywords);
   const hiddenBlock = renderHiddenSections(doc);
@@ -216,7 +254,6 @@ function openDoc(docId) {
   });
 }
 
-
 function resetProgress() {
   const confirmed = confirm("確定要重置目前瀏覽器中的測試存檔嗎？此動作無法復原。");
   if (!confirmed) return;
@@ -228,7 +265,7 @@ function resetProgress() {
 
   renderKeywordList();
   renderDocList();
-  alert("已重置存檔。");
+  showMessage("已重置存檔。", "warning");
 }
 
 function setupResetButton() {
@@ -240,13 +277,22 @@ function setupResetButton() {
 function setupWorldlineButton() {
   const button = document.getElementById("switch-worldline");
   button.addEventListener("click", () => {
-    alert("世界觀切換功能預留在這裡，下一步可接多世界線資料。\n（目前固定主世界）");
+    showMessage("世界觀切換功能預留中（目前固定主世界）。", "info");
   });
+}
+
+function renderVersion() {
+  const versionNode = document.getElementById("app-version");
+  if (!versionNode) return;
+
+  const version = window.APP_DATA.version || "0.001";
+  versionNode.textContent = `ver. ${version}`;
 }
 
 function init() {
   loadProgress();
   renderTabs();
+  renderVersion();
   renderKeywordList();
   renderDocList();
   setupResetButton();

@@ -1,8 +1,10 @@
 window.APP_DATA = {
   worldline: "主世界",
+  version: "0.001",
   docs: [
     {
       id: "doc-ri",
+      section: "深海的筆記",
       title: "一色理",
       category: "角色",
       body: "深海研究所的管理者，設施內唯二的研究者，研究著第四色；有著一雙翅膀與浮在頭頂上的光環。",
@@ -25,6 +27,7 @@ window.APP_DATA = {
     },
     {
       id: "doc-toru",
+      section: "深海的筆記",
       title: "白原透",
       category: "角色",
       body: "總是跟在一色理身邊的女性，喜歡吃甜甜圈。",
@@ -40,6 +43,7 @@ window.APP_DATA = {
     },
     {
       id: "doc-lab",
+      section: "深海的筆記",
       title: "深海研究所",
       category: "地點",
       body:
@@ -50,6 +54,7 @@ window.APP_DATA = {
     },
     {
       id: "doc-fourth-color",
+      section: "深海的筆記",
       title: "第四色",
       category: "其它",
       body:
@@ -67,6 +72,7 @@ window.APP_DATA = {
     },
     {
       id: "doc-she",
+      section: "深海的筆記",
       title: "攝",
       category: "角色",
       body:
@@ -84,6 +90,7 @@ window.APP_DATA = {
     },
     {
       id: "doc-seal",
+      section: "吉祥物",
       title: "油油海豹",
       category: "吉祥物",
       body: "油油的海豹，主食是馬鈴薯薯條，吉祥物。",

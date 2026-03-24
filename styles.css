@@ -66,22 +66,26 @@ body {
 }
 
 .tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin: 1rem 0;
 }
 
 .tab,
 .ghost-btn,
 .inventory-item,
-.danger-btn {
+.danger-btn,
+.tag-btn {
   border: 1px solid var(--line);
   background: var(--panel-soft);
   color: var(--text);
-  padding: 0.6rem;
-  border-radius: 8px;
+  padding: 0.32rem 0.62rem;
+  border-radius: 999px;
   cursor: pointer;
+  width: fit-content;
+  font-size: 0.9rem;
+  line-height: 1.2;
 }
 
 .tab.is-active {
@@ -98,17 +102,42 @@ body {
   display: none;
 }
 
-.list {
+.group-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.doc-group {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.6rem;
+  background: #121a27;
+}
+
+.doc-group-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.92rem;
+  color: var(--accent);
+}
+
+.tag-wrap,
+.keyword-grid {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
-.list button {
-  width: 100%;
-  text-align: left;
+.tag-btn,
+.inventory-item {
+  white-space: nowrap;
+}
+
+.hint-line {
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .doc-content {
@@ -136,6 +165,32 @@ body {
   filter: brightness(1.2);
 }
 
+.inline-message {
+  margin-top: 0.9rem;
+  border: 1px solid #35506d;
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  background: #152234;
+  color: #c7e5ff;
+  font-size: 0.9rem;
+}
+
+.inline-message.is-hidden {
+  display: none;
+}
+
+.inline-message.is-success {
+  border-color: #2e6a57;
+  background: #15352f;
+  color: #b8ffe5;
+}
+
+.inline-message.is-warning {
+  border-color: #7c6145;
+  background: #332517;
+  color: #ffe6c2;
+}
+
 .hint {
   color: var(--muted);
   font-size: 0.9rem;
@@ -146,7 +201,7 @@ body {
 }
 
 .taskbar {
-  height: 52px;
+  min-height: 56px;
   margin: 0 0.75rem 0.75rem;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -154,15 +209,26 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0.9rem;
+  padding: 0.4rem 0.9rem;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
 
+.taskbar-left {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.version-text {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
 
 .taskbar-actions {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: flex-end;
 }
 
 .danger-btn {
@@ -187,5 +253,12 @@ body {
 
   .taskbar {
     margin-top: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .taskbar-actions {
+    width: 100%;
   }
 }

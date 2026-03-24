@@ -22,12 +22,12 @@
 
           <section class="tab-panel" id="panel-docs">
             <h2>文檔清單</h2>
-            <ul id="doc-list" class="list"></ul>
+            <div id="doc-list" class="group-list"></div>
           </section>
 
           <section class="tab-panel is-hidden" id="panel-keywords">
             <h2>已收集關鍵詞</h2>
-            <ul id="keyword-list" class="list"></ul>
+            <ul id="keyword-list" class="keyword-grid"></ul>
           </section>
         </aside>
 
@@ -37,6 +37,8 @@
             <p id="doc-meta">右側預覽區（65%）</p>
           </header>
 
+          <div id="inline-message" class="inline-message is-hidden"></div>
+
           <article id="doc-content" class="doc-content">
             左側選擇文檔後，內容會顯示在這裡。
           </article>
@@ -44,7 +46,10 @@
       </main>
 
       <footer class="taskbar">
-        <div class="taskbar-left">Worldline: 主世界</div>
+        <div class="taskbar-left">
+          <div>Worldline: 主世界</div>
+          <div id="app-version" class="version-text">ver. 0.001</div>
+        </div>
         <div class="taskbar-actions">
           <button id="reset-progress" class="danger-btn">重置存檔（測試）</button>
           <button id="switch-worldline" class="ghost-btn">切換世界觀（預留）</button>
