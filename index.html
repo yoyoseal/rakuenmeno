@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>角色檔案庫原型</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <main class="workspace">
+        <aside class="left-panel">
+          <header class="panel-header">
+            <h1>資料庫</h1>
+            <p>初版架構（左 35%）</p>
+          </header>
+
+          <nav class="tabs" aria-label="分類頁籤">
+            <button class="tab is-active" data-tab="notes">筆記</button>
+            <button class="tab" data-tab="documents">文檔</button>
+            <button class="tab" data-tab="keywords">關鍵詞</button>
+          </nav>
+
+          <section class="tab-panel" id="panel-notes">
+            <h2>筆記清單</h2>
+            <div id="note-list" class="group-list"></div>
+          </section>
+
+          <section class="tab-panel is-hidden" id="panel-documents">
+            <h2>文檔清單</h2>
+            <div id="document-list" class="group-list"></div>
+          </section>
+
+          <section class="tab-panel is-hidden" id="panel-keywords">
+            <h2>已收集關鍵詞</h2>
+            <ul id="keyword-list" class="keyword-grid"></ul>
+          </section>
+        </aside>
+
+        <section class="right-panel" aria-live="polite">
+          <header class="panel-header">
+            <h2 id="doc-title">請先選擇一份筆記或文檔</h2>
+            <p id="doc-meta">右側預覽區（65%）</p>
+          </header>
+
+          <div id="inline-message" class="inline-message is-hidden"></div>
+
+          <article id="doc-content" class="doc-content">
+            左側選擇項目後，內容會顯示在這裡。
+          </article>
+        </section>
+      </main>
+
+      <footer class="taskbar">
+        <div class="taskbar-left">
+          <div>Worldline: 主世界</div>
+          <div id="app-version" class="version-text">ver. 0.006</div>
+        </div>
+        <div class="taskbar-actions">
+          <button id="reset-progress" class="danger-btn">重置存檔（測試）</button>
+          <button id="switch-worldline" class="ghost-btn">切換世界觀（預留）</button>
+        </div>
+      </footer>
+    </div>
+
+    <script src="data/meta.js"></script>
+    <script src="data/notes-deep-sea.js"></script>
+    <script src="data/notes-mascot.js"></script>
+    <script src="data/documents-deep-sea.js"></script>
+    <script src="data/index.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
