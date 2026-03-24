@@ -121,16 +121,31 @@ body {
 }
 
 
-.section-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 0.55rem;
+ .group-toggle {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: #182437;
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
 }
 
-.section-btn.is-active {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent) inset;
+.group-toggle::after {
+  content: "▾";
+  float: right;
+  opacity: 0.85;
+}
+
+.group-toggle[aria-expanded="false"]::after {
+  content: "▸";
+}
+
+.tag-wrap.is-collapsed {
+  display: none;
 }
 
 .tag-wrap,

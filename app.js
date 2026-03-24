@@ -3,9 +3,7 @@ const STORAGE_KEY = "rakuenmeno_progress_v2";
 const state = {
   currentItem: null,
   collectedKeywords: [],
-  activatedKeywordsByNote: {},
-  selectedNoteSection: null,
-  selectedDocumentSection: null
+  activatedKeywordsByNote: {}
 };
 
 function loadProgress() {
@@ -88,8 +86,6 @@ function groupBySection(items) {
 function renderSectionedList({
   containerId,
   items,
-  selectedSection,
-  setSelectedSection,
   clickHandler,
   titleMapper,
   emptyText
@@ -108,44 +104,43 @@ function renderSectionedList({
     return [];
   }
 
-  const currentSection =
-    selectedSection && groups[selectedSection] ? selectedSection : sectionNames[0];
+  sectionNames.forEach((sectionName, index) => {
+    const section = document.createElement("section");
+    section.className = "doc-group";
 
-  if (currentSection !== selectedSection) {
-    setSelectedSection(currentSection);
-  }
+    const toggle = document.createElement("button");
+    toggle.className = "group-toggle";
+    toggle.textContent = sectionName;
 
-  const sectionBar = document.createElement("div");
-  sectionBar.className = "section-bar";
+    const list = document.createElement("div");
+    list.className = "tag-wrap";
 
-  sectionNames.forEach((name) => {
-    const btn = document.createElement("button");
-    btn.className = `tag-btn section-btn ${name === currentSection ? "is-active" : ""}`;
-    btn.textContent = name;
-    btn.addEventListener("click", () => {
-      setSelectedSection(name);
-      renderNoteList();
-      renderDocumentList();
+    if (index !== 0) {
+      list.classList.add("is-collapsed");
+      toggle.setAttribute("aria-expanded", "false");
+    } else {
+      toggle.setAttribute("aria-expanded", "true");
+    }
+
+    groups[sectionName].forEach((item) => {
+      const btn = document.createElement("button");
+      btn.className = "tag-btn";
+      btn.textContent = titleMapper(item);
+      btn.addEventListener("click", () => clickHandler(item.id));
+      list.appendChild(btn);
     });
-    sectionBar.appendChild(btn);
+
+    toggle.addEventListener("click", () => {
+      const isCollapsed = list.classList.toggle("is-collapsed");
+      toggle.setAttribute("aria-expanded", String(!isCollapsed));
+    });
+
+    section.appendChild(toggle);
+    section.appendChild(list);
+    container.appendChild(section);
   });
 
-  container.appendChild(sectionBar);
-
-  const activeItems = groups[currentSection] || [];
-  const list = document.createElement("div");
-  list.className = "tag-wrap";
-
-  activeItems.forEach((item) => {
-    const btn = document.createElement("button");
-    btn.className = "tag-btn";
-    btn.textContent = titleMapper(item);
-    btn.addEventListener("click", () => clickHandler(item.id));
-    list.appendChild(btn);
-  });
-
-  container.appendChild(list);
-  return activeItems;
+  return items;
 }
 
 function renderNoteList() {
@@ -154,10 +149,6 @@ function renderNoteList() {
   const activeNotes = renderSectionedList({
     containerId: "note-list",
     items: visibleNotes,
-    selectedSection: state.selectedNoteSection,
-    setSelectedSection: (value) => {
-      state.selectedNoteSection = value;
-    },
     clickHandler: openNote,
     titleMapper: (note) => note.title,
     emptyText: "目前沒有可顯示的筆記。"
@@ -178,10 +169,6 @@ function renderDocumentList() {
   const activeDocs = renderSectionedList({
     containerId: "document-list",
     items: documents,
-    selectedSection: state.selectedDocumentSection,
-    setSelectedSection: (value) => {
-      state.selectedDocumentSection = value;
-    },
     clickHandler: openDocument,
     titleMapper: (file) => file.name,
     emptyText: "目前沒有可顯示的文檔。"
@@ -191,7 +178,7 @@ function renderDocumentList() {
     (file) => state.currentItem?.type === "document" && file.id === state.currentItem.id
   );
 
-  if (!docStillVisible && activeDocs.length > 0 && !state.currentItem) {
+  if (!docStillVisible && activeDocs.length > 0) {
     openDocument(activeDocs[0].id);
   }
 }
