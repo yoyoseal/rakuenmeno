@@ -108,8 +108,11 @@ function renderSectionedList({
     return [];
   }
 
-  if (!selectedSection || !groups[selectedSection]) {
-    setSelectedSection(sectionNames[0]);
+  const currentSection =
+    selectedSection && groups[selectedSection] ? selectedSection : sectionNames[0];
+
+  if (currentSection !== selectedSection) {
+    setSelectedSection(currentSection);
   }
 
   const sectionBar = document.createElement("div");
@@ -117,7 +120,7 @@ function renderSectionedList({
 
   sectionNames.forEach((name) => {
     const btn = document.createElement("button");
-    btn.className = `tag-btn section-btn ${name === selectedSection ? "is-active" : ""}`;
+    btn.className = `tag-btn section-btn ${name === currentSection ? "is-active" : ""}`;
     btn.textContent = name;
     btn.addEventListener("click", () => {
       setSelectedSection(name);
@@ -129,7 +132,7 @@ function renderSectionedList({
 
   container.appendChild(sectionBar);
 
-  const activeItems = groups[selectedSection] || [];
+  const activeItems = groups[currentSection] || [];
   const list = document.createElement("div");
   list.className = "tag-wrap";
 

@@ -1,4 +1,4 @@
 window.APP_META = {
   worldline: "主世界",
-  version: "0.004"
+  version: "0.005"
 };
