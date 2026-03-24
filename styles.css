@@ -153,6 +153,9 @@ body {
 .inline-keyword {
   color: var(--keyword);
   font-weight: 700;
+  font-size: 1em;
+  line-height: inherit;
+  font-family: inherit;
   text-decoration: underline;
   cursor: pointer;
   background: transparent;
