@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>角色檔案庫原型</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <main class="workspace">
+        <aside class="left-panel">
+          <header class="panel-header">
+            <h1>資料庫</h1>
+            <p>初版架構（左 35%）</p>
+          </header>
+
+          <nav class="tabs" aria-label="分類頁籤">
+            <button class="tab is-active" data-tab="docs">文檔分類</button>
+            <button class="tab" data-tab="keywords">關鍵詞頁面</button>
+          </nav>
+
+          <section class="tab-panel" id="panel-docs">
+            <h2>文檔清單</h2>
+            <ul id="doc-list" class="list"></ul>
+          </section>
+
+          <section class="tab-panel is-hidden" id="panel-keywords">
+            <h2>已收集關鍵詞</h2>
+            <ul id="keyword-list" class="list"></ul>
+          </section>
+        </aside>
+
+        <section class="right-panel" aria-live="polite">
+          <header class="panel-header">
+            <h2 id="doc-title">請先選擇一份文檔</h2>
+            <p id="doc-meta">右側預覽區（65%）</p>
+          </header>
+
+          <article id="doc-content" class="doc-content">
+            左側選擇文檔後，內容會顯示在這裡。
+          </article>
+        </section>
+      </main>
+
+      <footer class="taskbar">
+        <div class="taskbar-left">Worldline: 主世界</div>
+        <div class="taskbar-actions">
+          <button id="reset-progress" class="danger-btn">重置存檔（測試）</button>
+          <button id="switch-worldline" class="ghost-btn">切換世界觀（預留）</button>
+        </div>
+      </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
