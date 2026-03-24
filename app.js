@@ -3,7 +3,9 @@ const STORAGE_KEY = "rakuenmeno_progress_v2";
 const state = {
   currentItem: null,
   collectedKeywords: [],
-  activatedKeywordsByNote: {}
+  activatedKeywordsByNote: {},
+  selectedNoteSection: null,
+  selectedDocumentSection: null
 };
 
 function loadProgress() {
@@ -83,62 +85,111 @@ function groupBySection(items) {
   }, {});
 }
 
-function renderGroupedButtons(containerId, items, clickHandler, titleMapper) {
+function renderSectionedList({
+  containerId,
+  items,
+  selectedSection,
+  setSelectedSection,
+  clickHandler,
+  titleMapper,
+  emptyText
+}) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
 
   const groups = groupBySection(items);
+  const sectionNames = Object.keys(groups);
 
-  Object.entries(groups).forEach(([sectionName, sectionItems]) => {
-    const section = document.createElement("section");
-    section.className = "doc-group";
+  if (sectionNames.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "hint-line";
+    empty.textContent = emptyText;
+    container.appendChild(empty);
+    return [];
+  }
 
-    const heading = document.createElement("h3");
-    heading.className = "doc-group-title";
-    heading.textContent = sectionName;
-    section.appendChild(heading);
+  if (!selectedSection || !groups[selectedSection]) {
+    setSelectedSection(sectionNames[0]);
+  }
 
-    const list = document.createElement("div");
-    list.className = "tag-wrap";
+  const sectionBar = document.createElement("div");
+  sectionBar.className = "section-bar";
 
-    sectionItems.forEach((item) => {
-      const btn = document.createElement("button");
-      btn.className = "tag-btn";
-      btn.textContent = titleMapper(item);
-      btn.addEventListener("click", () => clickHandler(item.id));
-      list.appendChild(btn);
+  sectionNames.forEach((name) => {
+    const btn = document.createElement("button");
+    btn.className = `tag-btn section-btn ${name === selectedSection ? "is-active" : ""}`;
+    btn.textContent = name;
+    btn.addEventListener("click", () => {
+      setSelectedSection(name);
+      renderNoteList();
+      renderDocumentList();
     });
-
-    section.appendChild(list);
-    container.appendChild(section);
+    sectionBar.appendChild(btn);
   });
+
+  container.appendChild(sectionBar);
+
+  const activeItems = groups[selectedSection] || [];
+  const list = document.createElement("div");
+  list.className = "tag-wrap";
+
+  activeItems.forEach((item) => {
+    const btn = document.createElement("button");
+    btn.className = "tag-btn";
+    btn.textContent = titleMapper(item);
+    btn.addEventListener("click", () => clickHandler(item.id));
+    list.appendChild(btn);
+  });
+
+  container.appendChild(list);
+  return activeItems;
 }
 
 function renderNoteList() {
   const visibleNotes = getVisibleNotes();
 
-  renderGroupedButtons(
-    "note-list",
-    visibleNotes,
-    openNote,
-    (note) => note.title
-  );
+  const activeNotes = renderSectionedList({
+    containerId: "note-list",
+    items: visibleNotes,
+    selectedSection: state.selectedNoteSection,
+    setSelectedSection: (value) => {
+      state.selectedNoteSection = value;
+    },
+    clickHandler: openNote,
+    titleMapper: (note) => note.title,
+    emptyText: "目前沒有可顯示的筆記。"
+  });
 
-  const noteStillVisible = visibleNotes.some(
+  const noteStillVisible = activeNotes.some(
     (note) => state.currentItem?.type === "note" && note.id === state.currentItem.id
   );
 
-  if (!noteStillVisible && visibleNotes.length > 0) {
-    openNote(visibleNotes[0].id);
+  if (!noteStillVisible && activeNotes.length > 0) {
+    openNote(activeNotes[0].id);
   }
 }
 
 function renderDocumentList() {
   const documents = window.APP_DATA.documents;
-  renderGroupedButtons("document-list", documents, openDocument, (file) => file.name);
 
-  if (!state.currentItem && documents.length > 0) {
-    openDocument(documents[0].id);
+  const activeDocs = renderSectionedList({
+    containerId: "document-list",
+    items: documents,
+    selectedSection: state.selectedDocumentSection,
+    setSelectedSection: (value) => {
+      state.selectedDocumentSection = value;
+    },
+    clickHandler: openDocument,
+    titleMapper: (file) => file.name,
+    emptyText: "目前沒有可顯示的文檔。"
+  });
+
+  const docStillVisible = activeDocs.some(
+    (file) => state.currentItem?.type === "document" && file.id === state.currentItem.id
+  );
+
+  if (!docStillVisible && activeDocs.length > 0 && !state.currentItem) {
+    openDocument(activeDocs[0].id);
   }
 }
 

@@ -120,6 +120,19 @@ body {
   color: var(--accent);
 }
 
+
+.section-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.55rem;
+}
+
+.section-btn.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
 .tag-wrap,
 .keyword-grid {
   list-style: none;
